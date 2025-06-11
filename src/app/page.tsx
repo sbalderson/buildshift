@@ -1,6 +1,63 @@
 import Image from "next/image";
+import { useState } from "react";
+import nurseRates from "@/data/nurseRates.json";
+
+const classifications = Object.keys(nurseRates.classifications);
+
+type Shift = {
+  classification: string;
+  payPoint: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  isNight: boolean;
+  isPublicHoliday: boolean;
+};
 
 export default function Home() {
+  const [classification, setClassification] = useState("");
+  const [payPoint, setPayPoint] = useState("");
+  const [date, setDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [isNight, setIsNight] = useState(false);
+  const [isPublicHoliday, setIsPublicHoliday] = useState(false);
+  const [shifts, setShifts] = useState<Shift[]>([]);
+
+  // Get pay points/grades for selected classification
+  const payPoints = classification
+    ? Object.keys((nurseRates.classifications as any)[classification])
+    : [];
+
+  const handleAddShift = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!classification || !payPoint || !date || !startTime || !endTime) return;
+    setShifts([
+      ...shifts,
+      {
+        classification,
+        payPoint,
+        date,
+        startTime,
+        endTime,
+        isNight,
+        isPublicHoliday,
+      },
+    ]);
+    // Reset form
+    setClassification("");
+    setPayPoint("");
+    setDate("");
+    setStartTime("");
+    setEndTime("");
+    setIsNight(false);
+    setIsPublicHoliday(false);
+  };
+
+  const handleRemoveShift = (index: number) => {
+    setShifts(shifts.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
@@ -50,6 +107,145 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+
+        <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
+          <h1 className="text-2xl font-bold mb-4">NSW Nurse Pay Calculator</h1>
+          <form className="space-y-4" onSubmit={handleAddShift}>
+            <div>
+              <label className="block mb-1 font-medium">Classification</label>
+              <select
+                className="w-full border rounded px-3 py-2"
+                value={classification}
+                onChange={e => {
+                  setClassification(e.target.value);
+                  setPayPoint("");
+                }}
+                required
+              >
+                <option value="">Select classification</option>
+                {classifications.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+            {classification && (
+              <div>
+                <label className="block mb-1 font-medium">Pay Point / Grade</label>
+                <select
+                  className="w-full border rounded px-3 py-2"
+                  value={payPoint}
+                  onChange={e => setPayPoint(e.target.value)}
+                  required
+                >
+                  <option value="">Select pay point/grade</option>
+                  {payPoints.map((pp) => (
+                    <option key={pp} value={pp}>{pp}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div>
+              <label className="block mb-1 font-medium">Shift Date</label>
+              <input
+                type="date"
+                className="w-full border rounded px-3 py-2"
+                value={date}
+                onChange={e => setDate(e.target.value)}
+                required
+              />
+            </div>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <label className="block mb-1 font-medium">Start Time</label>
+                <input
+                  type="time"
+                  className="w-full border rounded px-3 py-2"
+                  value={startTime}
+                  onChange={e => setStartTime(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block mb-1 font-medium">End Time</label>
+                <input
+                  type="time"
+                  className="w-full border rounded px-3 py-2"
+                  value={endTime}
+                  onChange={e => setEndTime(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={isNight}
+                  onChange={e => setIsNight(e.target.checked)}
+                />
+                Night Shift
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={isPublicHoliday}
+                  onChange={e => setIsPublicHoliday(e.target.checked)}
+                />
+                Public Holiday
+              </label>
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              disabled={
+                !classification || !payPoint || !date || !startTime || !endTime
+              }
+            >
+              Add Shift
+            </button>
+          </form>
+        </div>
+        {shifts.length > 0 && (
+          <div className="w-full max-w-2xl bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-bold mb-4">Shift Summary</h2>
+            <table className="w-full text-sm border">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="p-2 border">Classification</th>
+                  <th className="p-2 border">Pay Point/Grade</th>
+                  <th className="p-2 border">Date</th>
+                  <th className="p-2 border">Start</th>
+                  <th className="p-2 border">End</th>
+                  <th className="p-2 border">Night</th>
+                  <th className="p-2 border">Public Holiday</th>
+                  <th className="p-2 border">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shifts.map((shift, idx) => (
+                  <tr key={idx}>
+                    <td className="p-2 border">{shift.classification}</td>
+                    <td className="p-2 border">{shift.payPoint}</td>
+                    <td className="p-2 border">{shift.date}</td>
+                    <td className="p-2 border">{shift.startTime}</td>
+                    <td className="p-2 border">{shift.endTime}</td>
+                    <td className="p-2 border text-center">{shift.isNight ? "✔️" : ""}</td>
+                    <td className="p-2 border text-center">{shift.isPublicHoliday ? "✔️" : ""}</td>
+                    <td className="p-2 border text-center">
+                      <button
+                        className="text-red-600 hover:underline"
+                        onClick={() => handleRemoveShift(idx)}
+                        type="button"
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a

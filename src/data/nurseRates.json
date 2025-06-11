@@ -1,0 +1,61 @@
+{
+  "classifications": {
+    "Registered Nurse Level 1": {
+      "Pay Point 1": 34.04,
+      "Pay Point 2": 34.74,
+      "Pay Point 3": 35.59,
+      "Pay Point 4": 36.54,
+      "Pay Point 5": 37.66,
+      "Pay Point 6": 38.75,
+      "Pay Point 7": 39.87,
+      "Pay Point 8": 40.91
+    },
+    "Registered Nurse Level 2": {
+      "Pay Point 1": 41.99,
+      "Pay Point 2": 42.66,
+      "Pay Point 3": 43.40,
+      "Pay Point 4": 44.11
+    },
+    "Registered Nurse Level 3": {
+      "Pay Point 1": 45.53,
+      "Pay Point 2": 46.37,
+      "Pay Point 3": 47.17,
+      "Pay Point 4": 48.01
+    },
+    "Registered Nurse Level 4": {
+      "Grade 1": 51.97,
+      "Grade 2": 55.69,
+      "Grade 3": 58.94
+    },
+    "Registered Nurse Level 5": {
+      "Grade 1": 52.44,
+      "Grade 2": 55.23,
+      "Grade 3": 58.94,
+      "Grade 4": 62.62,
+      "Grade 5": 69.06,
+      "Grade 6": 75.56
+    },
+    "Enrolled Nurse": {
+      "Pay Point 1": 27.67,
+      "Pay Point 2": 28.03,
+      "Pay Point 3": 28.41,
+      "Pay Point 4": 28.82,
+      "Pay Point 5": 29.11
+    },
+    "Assistant in Nursing": {
+      "1st Year": 25.51,
+      "2nd Year": 25.91,
+      "3rd Year and Thereafter": 26.32,
+      "Experienced (Cert III)": 27.17
+    }
+  },
+  "loadings": {
+    "weekend": 0.5,
+    "night": 0.15,
+    "publicHoliday": 1.5
+  },
+  "overtime": {
+    "thresholdHoursPerWeek": 38,
+    "rateMultiplier": 1.5
+  }
+} 
